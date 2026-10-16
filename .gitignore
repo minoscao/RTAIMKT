@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+.sites-runtime/
+tmp/
+.env
+.env.*
+*.sqlite
+*.sqlite-*
+*.log
+intelligence/raw/

@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "node prepare.cjs",
+    "db:generate": "drizzle-kit generate"
+  },
+  "devDependencies": {
+    "drizzle-kit": "0.31.4",
+    "drizzle-orm": "0.44.5"
+  },
+  "type": "module"
+}

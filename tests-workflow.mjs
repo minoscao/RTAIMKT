@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {DatabaseSync} from 'node:sqlite';
+import vm from 'node:vm';
+const db=new DatabaseSync(':memory:');db.exec(readFileSync('drizzle/0000_polite_risque.sql','utf8'));db.exec("INSERT INTO lead_state(id,follow,updated,actor) VALUES('existing',1,'old','owner')");db.exec(readFileSync('drizzle/0001_whole_loki.sql','utf8'));assert.equal(db.prepare('SELECT status FROM lead_state').get().status,'follow');
+const rows={client:{status:'client'},lead:{status:'new'}};
+const slots=[{weekday:3,start:'19:00',end:'21:00',courts:2,from:'2026-09-16',until:'2026-09-23'}];
+const c={RTCRM:{get:id=>rows[id],visible:()=>true,slots:()=>slots},esc:String,month:'2026-09',render:null};vm.createContext(c);vm.runInContext(readFileSync('dist/workflow.js','utf8')+';globalThis.flow=RTFlow;',c);
+const html=c.flow.calendar([{id:'client',name:'Client One'},{id:'lead',name:'Never schedule'}]);assert.equal((html.match(/Client One/g)||[]).length,2);assert.ok(!html.includes('Never schedule'));assert.ok(html.includes('19:00–21:00'));
+console.log('PASS: existing follow-ups migrate; calendar uses client status, weekday and date boundaries only.');
